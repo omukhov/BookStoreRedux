@@ -6,6 +6,7 @@ import { fetchBooks, bookAddedToCart } from '../../actions';
 import { compose } from '../../utils';
 import Spinner from '../spinner';
 import ErrorIndicator from '../error-indicator/';
+import { bindActionCreators } from 'redux';
 import './book-list.css';
 
 const BookList = ({ books, onAddedToCart }) => {
@@ -46,7 +47,7 @@ class BookListContainer extends Component {
     }
 }
 
-const mapStateToProps = ({books, loading, error}) => {
+const mapStateToProps = ({bookList: {books, loading, error}}) => {
     return {
         books,
         loading,
@@ -58,10 +59,11 @@ const mapStateToProps = ({books, loading, error}) => {
 // Action созданный разработчиком и диспатч
 const mapDispatchToProps = (dispatch, ownProps) => {
     const { bookstoreService } = ownProps;
-    return {
-        fetchBooks: fetchBooks(bookstoreService, dispatch),
-        onAddedToCart: (id) => dispatch(bookAddedToCart(id))
-    }
+    
+    return bindActionCreators({
+        fetchBooks: fetchBooks(bookstoreService),
+        onAddedToCart: bookAddedToCart
+    }, dispatch);
 };
 
 
